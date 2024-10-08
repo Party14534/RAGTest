@@ -11,15 +11,18 @@ load_dotenv()
 
 DATA_PATH = os.environ['DATA_PATH']
 CHROMA_PATH = os.environ['CHROMA_PATH']
+modelName = "qwen2.5:latest"
 
 PROMPT_TEMPLATE = """
-Answer the question based only on the following conext:
+Answer the question based only on the following context:
 
 {context}
 
 ---
 
-Answer the question based on the above context: {question}
+Answer the question based on the above context. If the context does not have 
+the answer to the question or is not relevant to SBSD reply only "I do not have the information necessary to
+answer that question.": {question}
 """
 
 def main():
@@ -43,7 +46,7 @@ def query_rag(query_text):
     prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
     prompt = prompt_template.format(context=context_text, question=query_text)
 
-    model = Ollama(model="mistral:latest")
+    model = Ollama(model=modelName)
     response_text = model.invoke(prompt)
 
     sources = [doc.metadata.get("id", None) for doc, _score in results]
