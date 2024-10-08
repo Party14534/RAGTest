@@ -26,14 +26,17 @@ def main():
     chunks = split_documents(documents)
     add_to_chroma(chunks)
 
+
 def clear_database():
     if os.path.exists(CHROMA_PATH):
         shutil.rmtree(CHROMA_PATH)
+
 
 def load_documents():
     document_loader = PyPDFDirectoryLoader(DATA_PATH)
     documents = document_loader.load()
     return documents
+
 
 def split_documents(documents):
     text_splitter = RecursiveCharacterTextSplitter(
@@ -46,10 +49,12 @@ def split_documents(documents):
 
     return chunks
 
+
 def add_to_chroma(chunks: list[Document]):
     # Create DB
     db = Chroma(
-            persist_directory=CHROMA_PATH, embedding_function=get_embedding_function()
+            persist_directory=CHROMA_PATH,
+            embedding_function=get_embedding_function()
     )
 
     # Calc page ids
@@ -72,6 +77,7 @@ def add_to_chroma(chunks: list[Document]):
     else:
         print("No new documents to add")
 
+
 def calculate_chunk_ids(chunks):
     last_page_id = None
     current_chunk_index = 0
@@ -86,7 +92,7 @@ def calculate_chunk_ids(chunks):
             current_chunk_index += 1
         else:
             current_chunk_index = 0
-        
+
         # Calculate chunk id
         chunk_id = f"{current_page_id}:{current_chunk_index}"
         last_page_id = current_page_id
@@ -95,6 +101,7 @@ def calculate_chunk_ids(chunks):
         chunk.metadata["id"] = chunk_id
 
     return chunks
+
 
 if __name__ == "__main__":
     main()
