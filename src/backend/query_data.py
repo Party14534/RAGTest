@@ -11,7 +11,7 @@ load_dotenv()
 
 DATA_PATH = os.environ['DATA_PATH']
 CHROMA_PATH = os.environ['CHROMA_PATH']
-modelName = "qwen2.5:latest"
+modelName = "qwen2.5:14b"
 
 PROMPT_TEMPLATE = """
 Answer the question based only on the following context:
@@ -20,9 +20,13 @@ Answer the question based only on the following context:
 
 ---
 
-Answer the question based on the above context. If the context does not have 
-the answer to the question or is not relevant to SBSD reply only "I do not have the information necessary to
-answer that question.": {question}
+Answer the question based on the above context and format your text in the 
+Markdown format so it is easier to read. If the context does not have 
+the answer to the question or is not helpful for understanding the SBSD website
+reply only "I do not have the information necessary to answer that question."
+If the question is in another language do your best to translate the context
+to the language the question was asked in:
+{question}
 """
 
 
@@ -33,6 +37,7 @@ def main():
     args = parser.parse_args()
     print("Querying rag...\n")
     query_text = args.query_text
+
     query_rag(query_text)
 
 
